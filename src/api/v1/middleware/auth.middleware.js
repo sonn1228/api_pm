@@ -1,7 +1,7 @@
 import { verifyToken } from "../../../utils/jwt.js";
 import { errorResponse } from "../../../helpers/response.js";
-import UserModel from "../../../model/user.model.js";
-import Blacklist from "../../../model/blacklist.model.js";
+import UserModel from "../../../models/user.model.js";
+import Blacklist from "../../../models/blacklist.model.js";
 
 class AuthMiddleware {
   requiredAuth = async (req, res, next) => {

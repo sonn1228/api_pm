@@ -1,7 +1,7 @@
 import { successResponse, errorResponse } from "../../../helpers/response.js";
 import paginationHelper from "../../../helpers/pagination.helper.js";
-import Account from "../../../model/account.model.js";
-import Product from "../../../model/product.model.js";
+import Account from "../../../models/account.model.js";
+import Product from "../../../models/product.model.js";
 
 const controller = {
   getProducts: async (req, res) => {

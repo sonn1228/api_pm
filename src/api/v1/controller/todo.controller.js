@@ -1,4 +1,4 @@
-import TodoModel from "../../../model/todo.model.js";
+import TodoModel from "../../../models/todo.model.js";
 import { successResponse, errorResponse } from "../../../helpers/response.js";
 
 const controller = {

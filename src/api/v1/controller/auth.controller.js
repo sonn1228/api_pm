@@ -1,57 +1,65 @@
-import UserModel from "../../../model/user.model.js";
+import User from "../../../models/user.model.js";
 import bcrypt from "bcrypt";
 import { createAccessToken } from "../../../utils/jwt.js";
 import { errorResponse, successResponse } from "../../../helpers/response.js";
-import Blacklist from "../../../model/blacklist.model.js";
+import Blacklist from "../../../models/blacklist.model.js";
 
 const controller = {
+
   signup: async (req, res) => {
     try {
       const { email, password } = req.body;
+      console.log(req.body);
 
       // Check if user already exists
-      const existingUser = await UserModel.findOne({ email });
+      const existingUser = await User.findOne({ email });
+      console.log("existingUser: ", existingUser);
+
       if (existingUser) {
         return res.status(400).json({ message: "User already exists" });
       }
+      console.log("existingUser: ", existingUser);
+
 
       // Hash password
       const hashedPassword = await bcrypt.hash(password, 10);
 
       // Create a new user with the hashed password
-      const newUser = new UserModel({
+      const newUser = new User({
         email,
         password: hashedPassword,
       });
 
       await newUser.save();
-      return res.status(201).json({ message: "User created successfully" });
+      return successResponse(res, 201, "successfully", { newUser });
     } catch (error) {
-      return res.status(500).json({ message: "Error during signup", error });
+      return errorResponse(res, 500, "Internal server error - signup controller");
     }
   },
 
   login: async (req, res) => {
     try {
-      const { email, password: hash } = req.body;
+      const { email, password } = req.body;
 
-      const user = await UserModel.findOne({ email });
+      const user = await User.findOne({ email });
       if (!user) {
-        return res.status(400).json({ message: "User not found" });
+        return errorResponse(res, 400, "User not found");
       }
 
-      if (!bcrypt.compareSync(hash, user.password)) {
+      if (!bcrypt.compareSync(password, user.password)) {
         return res.status(400).json({ message: "Invalid password" });
       }
 
-      const accessToken = createAccessToken({ userId: user.id });
+      const accessToken = createAccessToken({ userId: user._id });
       if (!accessToken) {
         return errorResponse(res, 500, "Server errors");
       }
+      console.log("accessToken: ", accessToken);
+
 
       return successResponse(res, 200, "Success", { accessToken });
     } catch (error) {
-      return res.status(500).json({ message: "Error during login", error });
+      errorResponse(res, 500, "Internal server error");
     }
   },
 
