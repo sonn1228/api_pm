@@ -1,5 +1,5 @@
 import { verifyToken } from "../../../utils/jwt.js";
-import { errorResponse } from "../../../helper/response.js";
+import { errorResponse } from "../../../helpers/response.js";
 import UserModel from "../../../model/user.model.js";
 import Blacklist from "../../../model/blacklist.model.js";
 

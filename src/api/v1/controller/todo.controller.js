@@ -1,5 +1,5 @@
 import TodoModel from "../../../model/todo.model.js";
-import { successResponse, errorResponse } from "../../../helper/response.js";
+import { successResponse, errorResponse } from "../../../helpers/response.js";
 
 const controller = {
   getTodos: async (req, res) => {

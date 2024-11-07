@@ -8,3 +8,12 @@ Docker build -t api_app .
 docker run -p 3333:3000 api_app
 docker run -p 3333:3000 -v $(pwd):/app api_app
 docker run -p 3333:3000 api_pm
+vercel env add MONGO_URI mongodb+srv://abc:XhNp5mC9sNutnUyv@cluster0.hh7hivb.mongodb.net/api
+
+src(folder)
+|
+|------index.js
+|------controller(folder)
+|------routes(folder)
+|
+|

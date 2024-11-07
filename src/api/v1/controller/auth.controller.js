@@ -1,7 +1,7 @@
 import UserModel from "../../../model/user.model.js";
 import bcrypt from "bcrypt";
 import { createAccessToken } from "../../../utils/jwt.js";
-import { errorResponse, successResponse } from "../../../helper/response.js";
+import { errorResponse, successResponse } from "../../../helpers/response.js";
 import Blacklist from "../../../model/blacklist.model.js";
 
 const controller = {

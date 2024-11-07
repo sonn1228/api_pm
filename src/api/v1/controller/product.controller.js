@@ -1,4 +1,4 @@
-import { successResponse, errorResponse } from "../../../helper/response.js";
+import { successResponse, errorResponse } from "../../../helpers/response.js";
 import paginationHelper from "../../../helpers/pagination.helper.js";
 import Account from "../../../model/account.model.js";
 import Product from "../../../model/product.model.js";
