@@ -77,8 +77,6 @@ const controller = {
     try {
       const id = req.params.id;
       const deletedProduct = await Product.deleteOne({ _id: id });
-      console.log("deletedProduct: ", deletedProduct);
-
       if (deletedProduct.deletedCount > 0) {
         return successResponse(res, 200, "Product deleted successfully", { deletedProduct });
       } else {
