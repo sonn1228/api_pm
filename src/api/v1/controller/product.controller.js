@@ -1,9 +1,9 @@
 import { successResponse, errorResponse } from "../../../helpers/response.js";
-import paginationHelper from "../../../helpers/pagination.helper.js";
 import Account from "../../../models/account.model.js";
 import Product from "../../../models/product.model.js";
-
+import { calculatePagination } from "../../../helpers/pagination.helper.js";
 const controller = {
+
   getProducts: async (req, res) => {
     try {
       // Status filter
@@ -28,25 +28,15 @@ const controller = {
         objSearch.keyword = req.query.keyword;
       }
 
-      // GET /products?page=1&pageSize=10
-      // Pagination
+      // Pagination with limit
       const page = parseInt(req.query.page) || 1;
-      const pageSize = parseInt(req.query.pageSize) || 10;
-      const totalItems = await Product.countDocuments(find);
-      const totalPages = Math.ceil(totalItems / pageSize);
-      const skip = (page - 1) * pageSize;
-
-      const pagination = {
-        currentPage: page,
-        pageSize: pageSize,
-        totalPages: totalPages,
-        totalItems: totalItems
-      };
+      const limit = parseInt(req.query.limit) || 10;
+      const pagination = await calculatePagination(Product, find, page, limit);
 
       // Fetch products with pagination and sorting
       const products = await Product.find(find)
-        .limit(pageSize)
-        .skip(skip)
+        .limit(limit)
+        .skip(pagination.skip)
         .sort(sort);
 
       // Enrich product data with user details
@@ -73,6 +63,7 @@ const controller = {
       return errorResponse(res, 500, "Internal server error");
     }
   },
+
 
   // [GET] /admin/products/:id
   detail: async (req, res) => {
