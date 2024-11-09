@@ -15,9 +15,9 @@ const controller = {
       // Sorting
       const sort = {};
       if (req.query.sortKey && req.query.sortValue) {
-        sort[req.query.sortKey] = req.query.sortValue;
+        sort[req.query.sortKey] = req.query.sortValue === 'desc' ? -1 : 1;
       } else {
-        sort.position = 'desc';
+        sort.position = -1;
       }
 
       // Searching
@@ -28,16 +28,28 @@ const controller = {
         objSearch.keyword = req.query.keyword;
       }
 
+      // GET /products?page=1&pageSize=10
       // Pagination
-      const countItem = await Product.countDocuments(find);
-      const objPagination = paginationHelper(req, countItem);
+      const page = parseInt(req.query.page) || 1;
+      const pageSize = parseInt(req.query.pageSize) || 10;
+      const totalItems = await Product.countDocuments(find);
+      const totalPages = Math.ceil(totalItems / pageSize);
+      const skip = (page - 1) * pageSize;
 
-      // Fetch products
+      const pagination = {
+        currentPage: page,
+        pageSize: pageSize,
+        totalPages: totalPages,
+        totalItems: totalItems
+      };
+
+      // Fetch products with pagination and sorting
       const products = await Product.find(find)
-        .limit(objPagination.limitItem)
-        .skip(objPagination.skipItem)
+        .limit(pageSize)
+        .skip(skip)
         .sort(sort);
 
+      // Enrich product data with user details
       for (const product of products) {
         const user = await Account.findOne({
           _id: product.createdBy.account_id,
@@ -54,12 +66,14 @@ const controller = {
           updatedBy.fullName = updater.fullName;
         }
       }
-      return successResponse(res, 200, "successfully", { products, objSearch, objPagination });
+
+      return successResponse(res, 200, "success", { products, objSearch, pagination });
     } catch (error) {
       console.log('%cError: ', 'color: red;', error);
       return errorResponse(res, 500, "Internal server error");
     }
   },
+
   // [GET] /admin/products/:id
   detail: async (req, res) => {
     try {
