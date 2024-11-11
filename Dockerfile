@@ -1,20 +1,27 @@
-# Sử dụng phiên bản Node.js làm base image
+# Sử dụng image Node.js chính thức làm base image
 FROM node:16
 
-# Thiết lập thư mục làm việc trong container
 WORKDIR /app
+# Đặt thư mục làm việc default /app bên trong container.
 
-# Copy file package.json và package-lock.json vào container
 COPY package*.json ./
+# Sao chép file package.json và package-lock.json vào container
+RUN npm install
+COPY . .
+# copy source code to workdir 
+# ignore in Dockerfile
 
-# Cài đặt các dependencies
+# Cài đặt dependencies
 RUN npm install
 
-# Copy toàn bộ mã nguồn vào container
-COPY . .
+# Sao chép toàn bộ mã nguồn vào container
 
-# Expose cổng mà ứng dụng Express sẽ chạy
-EXPOSE 3000
+# Expose cổng 3000 để ứng dụng có thể truy cập
+# Chỉ mang tính chất tài liệu
+EXPOSE 3001
 
 # Lệnh để chạy ứng dụng
-CMD ["node", "index.js"]
+CMD ["npm", "start"]
+
+
+# docker build -t myapp . && docker run --rm -p 3000:3000 myapp
